@@ -19,4 +19,7 @@ administre.
 Los Clientes y los posibles Centros de Distribución están conectados entre sí, por distintas rutas.
 Las rutas conectan Clientes con otros Clientes y con algunos Centros de Distribución (no todos los
 Clientes están conectados en forma directa con un Centro de Distribución, estando conectados con
-otros Clientes). La distribución es similar a la de la figura:
+otros Clientes). 
+
+
+En la figura, todos los puntos numerados del 0 al 49 representan distintos clientes; los potenciales Centros de Distribución están numerados del 50 al 57. Todos los Centros de Distribución están conectados por vías férreas al Puerto desde donde se exportan las materias primas. El costo de transportar la materia prima desde un Cliente a un Centro de Distribución está determinado por el costo mínimo unitario de transportar la materia prima entre dicho Cliente y dicho Centro de Distribución, más el costo unitario de transportarla entre el Centro de Distribución y el Puerto, todo ello multiplicado por el volumen de producción anual del Cliente. El objetivo del problema es: - Determinar cuáles Centros de Distribución deben construirse, de tal forma que se minimice el costo total anual - Determinar a qué Centro de Distribución debe enviar cada Cliente su materia prima.
