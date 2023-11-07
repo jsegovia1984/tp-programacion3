@@ -1,0 +1,8 @@
+VARIABLES
+
+client                  |  Clientes
+dist_center             |  Centros de distribución
+route                   |  Ruta de entrada entre cada cliente o centro de distribución
+client_matrix           |  Matriz de clientes de entrada
+client_assigned_matrix  |  Matriz asignada de clientes
+result_matrix           |  Matriz de resultado
