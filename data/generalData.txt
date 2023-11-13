@@ -1,0 +1,4 @@
+#total de Clientes
+50	
+#total de potenciales Centros de Distribucion
+8	

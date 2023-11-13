@@ -4,8 +4,9 @@ import java.util.*;
 
 public class Graph {
 
-	private static final int INFINITY = Integer.MAX_VALUE; //Nota para nosotrs, asi se declara un infinito en java, es el maximo valor q puede tener un int
-
+	public static final int INFINITY = Integer.MAX_VALUE; // Nota para nosotrs, asi se declara un infinito en java, es
+															// el maximo valor q puede tener un int
+	public Client Origin; // This node is used as an indicator that the Graph is initially empty
 
 	public abstract class Node {
 		int ID;
@@ -15,18 +16,26 @@ public class Graph {
 		public abstract void get_Cost();
 	}
 
-	class Client extends Node {
-		int ID;
+	public class Client extends Node {
+
 		int annual_Prod;
 
 		@Override
 		public void get_Cost() {
 			// TODO: Implementar
 		}
+
+		public Client(int id, int annualProd) {
+			this.ID = id;
+			this.annual_Prod = annualProd;
+			nextRoute = null;
+			nextNode = null;
+		}
 	}
 
-	class Dist_center extends Node { // Somehow merge with Client or Standarize the Client class into a Node Class
-		int ID;
+	public class Dist_center extends Node { // Somehow merge with Client or Standarize the Client class into a Node
+											// Class
+
 		int Port_Cost;
 		int Annual_Cost;
 
@@ -36,13 +45,11 @@ public class Graph {
 		}
 	}
 
-	class Route {
+	public class Route {
 		int Uni_Cost;
 		Node Destination;
 		Route nextRoute;
 	}
-
-	Client Origin; // This node is used as an indicator that the Graph is initially empty
 
 	public void InitializeGraph() {
 
@@ -51,18 +58,13 @@ public class Graph {
 	}
 
 	public void add_Client(int ID, int annual_Prod) { // Method to add Clients to the Graph
-
-		Client new_Client = new Client();
-		new_Client.ID = ID;
-		new_Client.annual_Prod = annual_Prod;
+		Client new_Client = new Client(ID, annual_Prod);
 		new_Client.nextRoute = null; // Starts without Routes
 		new_Client.nextNode = Origin;
 		Origin = new_Client;
-
 	}
 
 	public void add_Dist_center(int ID, int Port_Cost, int Annual_Cost) {
-
 		Dist_center new_Center = new Dist_center();
 		new_Center.ID = ID;
 		new_Center.Port_Cost = Port_Cost;
@@ -101,11 +103,19 @@ public class Graph {
 		Node Source = search_Node(ID_Source);
 		Node Destination = search_Node(ID_Dest);
 		// Create an exception when either is null
+		if (Source == null || Destination == null) {
+			// throw new RuntimeException("No se puede agregar una ruta entre nodos que no
+			// existen " + ID_Source + " "
+			// + ID_Dest);
+			return;
+		}
 		Route new_Route = new Route();
 		new_Route.Uni_Cost = Uni_Cost; // Sets the Unitary Cost of Transport through this Route
 		new_Route.Destination = Destination; // Sets the Route Destination
 		new_Route.nextRoute = Source.nextRoute; // Sets to the Origins previous Route
-		Source.nextRoute = new_Route; // Becomes the new Origin´s first route
+		if (Source != null) {
+			Source.nextRoute = new_Route; // Becomes the new Origin´s first route
+		}
 
 	}
 
@@ -136,7 +146,7 @@ public class Graph {
 
 	}
 
-	private Node search_Node(int ID) { // Searches the Corresponding Client Node with the given ID, Returns Null if
+	public Node search_Node(int ID) { // Searches the Corresponding Client Node with the given ID, Returns Null if
 										// not found
 
 		Node Aux = Origin;
@@ -147,8 +157,7 @@ public class Graph {
 
 	}
 
-
-	//harry soy santi, agregue esto para ayudarme en el dijkstra
+	// harry soy santi, agregue esto para ayudarme en el dijkstra
 	public int getTotalNodes() {
 		int count = 0;
 		Node current = Origin;
@@ -177,6 +186,14 @@ public class Graph {
 			route = route.nextRoute;
 		}
 		return INFINITY; // If there is no route, returns infinity
+	}
+
+	public boolean nodeExist(int id) {
+		return search_Node(id) != null;
+	}
+
+	public Node getOriginNode() {
+		return Origin;
 	}
 
 }
