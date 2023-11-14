@@ -34,9 +34,8 @@ public class Graph {
 		}
 	}
 
-	public class Dist_center extends Node { // Somehow merge with Client or Standarize the Client class into a Node
-											// Class
-
+	public class Dist_center extends Node { 
+											
 		int Port_Cost;
 		int Annual_Cost;
 
@@ -46,6 +45,14 @@ public class Graph {
 
 		public int getAnnualCost() {
 			return Annual_Cost;
+		}
+		
+		public Dist_center(int id, int annualCost, int portCost) {
+			this.ID = id;
+			this.Annual_Cost = annualCost;
+			this.Port_Cost = portCost;
+			nextRoute = null;
+			nextNode = null;
 		}
 	}
 
@@ -60,14 +67,20 @@ public class Graph {
 		new_Client.nextRoute = null; // Starts without Routes
 		new_Client.nextNode = Origin;
 		Origin = new_Client;
+		System.out.println("Client " + ID + " added");
+		System.out.println("---------------------------------------------");
 	}
 
 	public void add_Dist_center(int ID, int Port_Cost, int Annual_Cost) {
-		Dist_center new_Center = new Dist_center();
+		Dist_center new_Center = new Dist_center(ID, Annual_Cost, Port_Cost);
 		new_Center.ID = ID;
 		new_Center.Port_Cost = Port_Cost;
 		new_Center.Annual_Cost = Annual_Cost;
-
+		new_Center.nextNode = null;
+		new_Center.nextNode = Origin; // This was somehow set to null instead of Origin, so the Distribution Centers wouldnt be linked to the previous nodes
+		Origin = new_Center; // This too was never assigned, how did this pass the previous revision?
+		System.out.println("Distribution Center " + ID + " added");
+		System.out.println("---------------------------------------------");
 	}
 
 	public void add_Node(Node node) {
@@ -82,20 +95,32 @@ public class Graph {
 	public void add_Route_Between_Nodes(int ID_Source, int ID_Dest, int Uni_Cost) { // Method to add Routes between a
 		Node Source = search_Node(ID_Source);
 		Node Destination = search_Node(ID_Dest);
+		
 		// Create an exception when either is null
 		if (Source == null || Destination == null) {
 			// throw new RuntimeException("No se puede agregar una ruta entre nodos que no
 			// existen " + ID_Source + " "
 			// + ID_Dest);
+			if(Source == null) {
+				System.out.println("Source is null?");
+			}
+			else {
+				System.out.println("Destination is null?");
+			}
+			System.out.println("Error");
 			return;
 		}
 		Route new_Route = new Route();
 		new_Route.Uni_Cost = Uni_Cost; // Sets the Unitary Cost of Transport through this Route
 		new_Route.Destination = Destination; // Sets the Route Destination
 		new_Route.nextRoute = Source.nextRoute; // Sets to the Origins previous Route
-		if (Source != null) {
+		Source.nextRoute = new_Route; // Becomes the new Origin´s first route
+		System.out.println("Route added!");
+		/*
+		if (Source.nextRoute != null) { // This was wrong
 			Source.nextRoute = new_Route; // Becomes the new Origin´s first route
 		}
+		*/
 
 	}
 
@@ -128,10 +153,20 @@ public class Graph {
 
 	public Node search_Node(int ID) { // Searches the Corresponding Client Node with the given ID, Returns Null if
 										// not found
-
+		
+		System.out.println("Searched Node: " + ID);
+		
 		Node Aux = Origin;
+		
+		//System.out.println("Current Node ID: " + Aux.ID);
+		
 		while (Aux != null && Aux.ID != ID) {
 			Aux = Aux.nextNode;
+			//System.out.println("Current Node ID: " + Aux.ID);
+		}
+		
+		if (Aux != null) {
+			System.out.println("Node " + ID + " Found!");
 		}
 		return Aux;
 
