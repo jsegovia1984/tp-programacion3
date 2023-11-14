@@ -5,19 +5,18 @@ import java.util.*;
 public class DijkstraAlgorithm {
     private static final int INFINITY = Integer.MAX_VALUE; // Valor infinito para representar la distancia entre nodos
 
-    public int[][] dijkstra(Graph graph, List<Integer> distributionCenters) {
+    public int[][] dijkstra(Graph graph, ArrayList<Integer> distributionCenters) {
         int totalNodes = graph.getTotalNodes();
         int[][] distances = new int[distributionCenters.size()][totalNodes];
         int count = 0;
 
         for (int distCenter : distributionCenters) {
-            int distCenterIdx = 0;
+            // int distCenterIdx = 0;
             for (int i = 0; i < totalNodes; i++) {
                 distances[count][i] = dijkstraUtil(graph, distCenter, i);
             }
             count++;
         }
-
         return distances;
     }
 
@@ -44,7 +43,6 @@ public class DijkstraAlgorithm {
                 }
             }
         }
-
         return dist[destination];
     }
 
@@ -59,3 +57,4 @@ public class DijkstraAlgorithm {
         return minIndex;
     }
 }
+
