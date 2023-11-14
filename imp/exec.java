@@ -7,46 +7,50 @@ import java.util.List;
 import imp.Graph.Client;
 import imp.Graph.Node;
 
-public class exec {
+public class Exec {
 
     public static void main(String[] args) {
 
-        // we start reading the files and loading it into the file reader structure
+        // We start reading the files and loading it into the file reader structure
         FileReader fileReader = new FileReader();
         try {
             fileReader.loadClients();
+            fileReader.loadDistCenters(fileReader.getTotalNodes()); // We obtain the amount of clients
             fileReader.loadRoutes();
-            fileReader.loadDistCenters();
 
+            
+            // The load order was wrong, it was previously clients, routes and then the distribution centers. How do you add routes to non-existent distribution centers? Lol
+            // Whoever wrote the load sequence is a dummy
         } catch (IOException e) {
             e.printStackTrace();
         }
         // also the file reader creates the graph with clients, and the distribution centers
         Graph filledGraph = fileReader.getGraph();
 
+        ArrayList<Integer> distCenters = fileReader.getDistCenters();
+        
+        
         //Dijkstra -----------------------------------------------------------------------------------------------------
 
         // we define the dijkstra structure
-        DijkstraAlgorithm dijkstra = new DijkstraAlgorithm();
-
-        // this is temporary
-        ArrayList<Integer> lista = new ArrayList<>();
-        for (int i = 0; i < 8; i++) {
-            lista.add(i);
-        }
+       // DijkstraAlgorithm dijkstra = new DijkstraAlgorithm();
 
         // we assign the result of the calculations into a matrix
-        int[][] dijkstra_matrix = dijkstra.dijkstra(filledGraph, lista);
+        //int[][] dijkstra_matrix = dijkstra.dijkstra(filledGraph, distCenters);
 
         // this is a function to show in console the dijktras matrix
-        System.out.println("Matriz Dijkstra ");
-        System.out.println("");
-        show_matrix(dijkstra_matrix);
-
+        //System.out.println("Matriz Dijkstra ");
+        //System.out.println("");
+        //show_matrix(dijkstra_matrix);
+        
+    }
+        
+        /*
+        
         // Greedy ------------------------------------------------------------------------------------------------------
 
         GreedyAlgorithm greedy = new GreedyAlgorithm();
-        int [][] greedy_matrix = greedy.set_Closest_Distrib_Center(filledGraph, dijkstra_matrix, lista);
+        int [][] greedy_matrix = greedy.set_Closest_Distrib_Center(filledGraph, dijkstra_matrix, distCenters);
 
         // this is a function to show in console the greedy matrix
         System.out.println("Matriz Greedy ");
@@ -58,7 +62,7 @@ public class exec {
         // System.out.println("Node ID: " + node.ID + " Annual Prod: " + node.annual_Prod);
         // System.out.println("Total Nodes: " + filledGraph.getTotalNodes());
     }
-
+		*/
     public static void show_matrix(int[][] matrix){
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[0].length; j++) {
