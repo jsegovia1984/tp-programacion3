@@ -47,13 +47,13 @@ public class FileReader {
             String[] parts = line.split(",");
             int id = Integer.parseInt(parts[0]);
             int annualProd = Integer.parseInt(parts[1]);
-            System.out.println("New Client ID: " + id + " AnnualProd: " + annualProd);
+            //System.out.println("New Client ID: " + id + " AnnualProd: " + annualProd);
             graph.add_Client(id, annualProd);
         }
         reader.close();
     }
 
-    public void loadDistCenters() throws IOException {
+    public void loadDistCenters(int clientID_count) throws IOException {
 
         String line;
         BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(distCenterFileName)));
@@ -63,12 +63,10 @@ public class FileReader {
                 continue; // Skip comment lines
             }
             String[] parts = line.split(",");
-            int id = Integer.parseInt(parts[0]);
+            int id = (Integer.parseInt(parts[0]) + clientID_count); // By getting the amount of Clients beforehand, we can avoid repeating IDs
             int portCost = Integer.parseInt(parts[1]);
             int annualCost = Integer.parseInt(parts[2]);
-
-            System.out.println(
-                    "New Distribution Center: " + id + " Port Cost: " + portCost + " Annual Cost: " + annualCost);
+            //System.out.println("New Distribution Center: " + id + " Port Cost: " + portCost + " Annual Cost: " + annualCost);
             distCentersList.add(id);
             graph.add_Dist_center(id, portCost, annualCost);
         }
@@ -77,6 +75,10 @@ public class FileReader {
 
     public Graph getGraph() {
         return graph;
+    }
+    
+    public int getTotalNodes() {
+    	return graph.getTotalNodes();
     }
 
     public ArrayList<Integer> getDistCenters() {
