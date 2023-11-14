@@ -6,23 +6,24 @@ public class Graph {
 
 	public static final int INFINITY = Integer.MAX_VALUE; // Nota para nosotrs, asi se declara un infinito en java, es
 															// el maximo valor q puede tener un int
-	public Client Origin; // This node is used as an indicator that the Graph is initially empty
+	public Node Origin; // This node is used as an indicator that the Graph is initially empty
+
+	public Graph() { // Constructor for the Graph
+		Origin = null;
+	}
 
 	public abstract class Node {
 		int ID;
 		Node nextNode;
 		Route nextRoute;
-
-		public abstract void get_Cost();
 	}
 
 	public class Client extends Node {
 
 		int annual_Prod;
 
-		@Override
-		public void get_Cost() {
-			// TODO: Implementar
+		public int getAnnualProd() {
+			return annual_Prod;
 		}
 
 		public Client(int id, int annualProd) {
@@ -39,9 +40,12 @@ public class Graph {
 		int Port_Cost;
 		int Annual_Cost;
 
-		@Override
-		public void get_Cost() {
-			// TODO: Implementar
+		public int getPortCost() {
+			return Port_Cost;
+		}
+
+		public int getAnnualCost() {
+			return Annual_Cost;
 		}
 	}
 
@@ -49,12 +53,6 @@ public class Graph {
 		int Uni_Cost;
 		Node Destination;
 		Route nextRoute;
-	}
-
-	public void InitializeGraph() {
-
-		Origin = null; // It sets the Origin node to null
-
 	}
 
 	public void add_Client(int ID, int annual_Prod) { // Method to add Clients to the Graph
@@ -80,22 +78,6 @@ public class Graph {
 		}
 
 	}
-
-	// public void add_Route(int ID_Source, int ID_Dest, int Uni_Cost) { // Method
-	// to add Routes between a client and
-	// // another
-
-	// Client Source = search_Client(ID_Source);
-	// Client Destination = search_Client(ID_Dest);
-	// // Create an exception when either is null
-	// Route new_Route = new Route();
-	// new_Route.Uni_Cost = Uni_Cost; // Sets the Unitary Cost of Transport through
-	// this Route
-	// new_Route.clientDest = Destination; // Sets the Route Destination
-	// new_Route.nextRoute = Source.Route; // Sets to the Origins previous Route
-	// Source.Route = new_Route; // Becomes the new Origin´s first route
-
-	// }
 
 	public void add_Route_Between_Nodes(int ID_Source, int ID_Dest, int Uni_Cost) { // Method to add Routes between a
 																					// client and another
