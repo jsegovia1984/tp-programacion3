@@ -80,8 +80,6 @@ public class Graph {
 	}
 
 	public void add_Route_Between_Nodes(int ID_Source, int ID_Dest, int Uni_Cost) { // Method to add Routes between a
-																					// client and another
-
 		Node Source = search_Node(ID_Source);
 		Node Destination = search_Node(ID_Dest);
 		// Create an exception when either is null
@@ -113,9 +111,9 @@ public class Graph {
 
 	}
 
-	public List<Node> get_Neighbors(int ID) {
+	public ArrayList<Node> get_Neighbors(int ID) {
 
-		List<Node> Neighbors = new ArrayList<Node>();
+		ArrayList<Node> Neighbors = new ArrayList<Node>();
 		Node Source = search_Node(ID);
 		if (Source != null) {
 			Route act_Route = Source.nextRoute;

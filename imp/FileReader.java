@@ -1,19 +1,19 @@
 package imp;
 
 import java.io.*;
-
-import imp.Graph.Client;
+import java.util.ArrayList;
 
 public class FileReader {
 
     public Graph graph;
+    public ArrayList<Integer> distCentersList;
     public String routesFileName = "data/routes.txt";
     public String clientFileName = "data/clientData.txt";
     public String distCenterFileName = "data/distCenter.txt";
 
     public FileReader() {
         graph = new Graph();
-        graph.InitializeGraph();
+        distCentersList = new ArrayList<Integer>();
     }
 
     public void loadRoutes() throws IOException {
@@ -66,8 +66,10 @@ public class FileReader {
             int id = Integer.parseInt(parts[0]);
             int portCost = Integer.parseInt(parts[1]);
             int annualCost = Integer.parseInt(parts[2]);
+
             System.out.println(
                     "New Distribution Center: " + id + " Port Cost: " + portCost + " Annual Cost: " + annualCost);
+            distCentersList.add(id);
             graph.add_Dist_center(id, portCost, annualCost);
         }
         reader.close();
@@ -75,6 +77,10 @@ public class FileReader {
 
     public Graph getGraph() {
         return graph;
+    }
+
+    public ArrayList<Integer> getDistCenters() {
+        return distCentersList;
     }
 
 }
