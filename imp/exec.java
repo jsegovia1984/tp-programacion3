@@ -7,7 +7,7 @@ import java.util.List;
 import imp.Graph.Client;
 import imp.Graph.Node;
 
-public class Exec {
+public class exec {
 
     public static void main(String[] args) {
 
@@ -17,8 +17,6 @@ public class Exec {
             fileReader.loadClients();
             fileReader.loadDistCenters(fileReader.getTotalNodes()); // We obtain the amount of clients
             fileReader.loadRoutes();
-
-            
             // The load order was wrong, it was previously clients, routes and then the distribution centers. How do you add routes to non-existent distribution centers? Lol
             // Whoever wrote the load sequence is a dummy
         } catch (IOException e) {
@@ -26,22 +24,21 @@ public class Exec {
         }
         // also the file reader creates the graph with clients, and the distribution centers
         Graph filledGraph = fileReader.getGraph();
-
         ArrayList<Integer> distCenters = fileReader.getDistCenters();
         
         
         //Dijkstra -----------------------------------------------------------------------------------------------------
 
         // we define the dijkstra structure
-       // DijkstraAlgorithm dijkstra = new DijkstraAlgorithm();
+        DijkstraAlgorithm dijkstra = new DijkstraAlgorithm();
 
         // we assign the result of the calculations into a matrix
-        //int[][] dijkstra_matrix = dijkstra.dijkstra(filledGraph, distCenters);
+        int[][] dijkstra_matrix = dijkstra.dijkstra(filledGraph, distCenters);
 
         // this is a function to show in console the dijktras matrix
-        //System.out.println("Matriz Dijkstra ");
-        //System.out.println("");
-        //show_matrix(dijkstra_matrix);
+        System.out.println("Matriz Dijkstra ");
+        System.out.println("");
+        show_matrix(dijkstra_matrix);
         
     }
         
@@ -63,7 +60,16 @@ public class Exec {
         // System.out.println("Total Nodes: " + filledGraph.getTotalNodes());
     }
 		*/
+
+
+
     public static void show_matrix(int[][] matrix){
+
+        for (int i = 0; i < matrix[0].length; i++){
+            System.out.print(String.format("%4d ", i));
+        }
+        System.out.println("");
+
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[0].length; j++) {
                 if (matrix[i][j] == Integer.MAX_VALUE) {
