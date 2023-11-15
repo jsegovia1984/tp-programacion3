@@ -7,48 +7,39 @@ public class GreedyAlgorithm {
 	public int[][] set_Closest_Distrib_Center(Graph graph, int[][] Distances ,ArrayList<Integer> distributionCenters) {
 	
 		int totalNodes = graph.getTotalNodes(); // Gets the total amount of nodes in the graph
-		
+
 		int[][] Client_Assignations = new int[totalNodes][distributionCenters.size()];  // Creates the Result Matrix with all values set to 0 initially
-		
+
 		for(int current_Node = 0; current_Node < totalNodes; current_Node++) { // For each client in the graph
-			
+
 			if ( !distributionCenters.contains(current_Node)) { // Checks if the current node is not a distribution centre
 
-				System.out.println("Nodo_actual: " + current_Node);
+				int Node_Closest_Center = find_Closest_Distrib_Center(Distances, current_Node, distributionCenters);
 
-				int Node_Closest_Center = find_Closest_Distrib_Center(current_Node, distributionCenters, Distances);
-				
 				Client_Assignations[current_Node][Node_Closest_Center] = 1;
-				
 			}
-			
 		}
-		
-		
+
 
 		return Client_Assignations;
-		
+
 		}
 	
-		private int find_Closest_Distrib_Center(int Client_ID, ArrayList<Integer> distributionCenters, int[][] Distances) { // Returns the closest distribution centre of the given client
+		private int find_Closest_Distrib_Center(int[][] Distances, int current_Node, ArrayList<Integer> distributionCenters) { // Returns the closest distribution centre of the given client
 			
-			int Closest_Distrib = distributionCenters.get(0); // Starts with the first Distribution Centre Assigned
-			
-			for(int current_Center = 1; current_Center < distributionCenters.size(); current_Center++) { // Compares each remaining Distribution Centres value in the Client_ID row
+			int Closest_Distrib = 0; // Starts with the first Distribution Centre Assigned
 
-				if(Distances[current_Center][Client_ID] < Distances[Closest_Distrib][Client_ID]) { // If the distance is less then it becomes the closest centress
+			for(int current_Center = 0; current_Center < distributionCenters.size() ; current_Center++) { // Compares each remaining Distribution Centres value in the Client_ID row
+
+				if(Distances[current_Center][current_Node] < Distances[Closest_Distrib][current_Node]) { // If the distance is less then it becomes the closest centress
 					
 					Closest_Distrib = current_Center;
 				}
-			
 			}
-
-			System.out.println(Closest_Distrib);
-			
 			return Closest_Distrib;
-				
 		}
-	
+
+
 	/* 
 	 *  OUTPUT:
 	 *  

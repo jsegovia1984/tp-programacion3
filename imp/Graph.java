@@ -67,8 +67,8 @@ public class Graph {
 		new_Client.nextRoute = null; // Starts without Routes
 		new_Client.nextNode = Origin;
 		Origin = new_Client;
-		System.out.println("Client " + ID + " added");
-		System.out.println("---------------------------------------------");
+		//System.out.println("Client " + ID + " added");
+		//System.out.println("---------------------------------------------");
 	}
 
 	public void add_Dist_center(int ID, int Port_Cost, int Annual_Cost) {
@@ -79,8 +79,8 @@ public class Graph {
 		new_Center.nextNode = null;
 		new_Center.nextNode = Origin; // This was somehow set to null instead of Origin, so the Distribution Centers wouldnt be linked to the previous nodes
 		Origin = new_Center; // This too was never assigned, how did this pass the previous revision?
-		System.out.println("Distribution Center " + ID + " added");
-		System.out.println("---------------------------------------------");
+		//System.out.println("Distribution Center " + ID + " added");
+		//System.out.println("---------------------------------------------");
 	}
 
 	public void add_Node(Node node) {
@@ -115,7 +115,7 @@ public class Graph {
 		new_Route.Destination = Destination; // Sets the Route Destination
 		new_Route.nextRoute = Source.nextRoute; // Sets to the Origins previous Route
 		Source.nextRoute = new_Route; // Becomes the new Origin´s first route
-		System.out.println("Route added!");
+		// System.out.println("Route added!");
 		/*
 		if (Source.nextRoute != null) { // This was wrong
 			Source.nextRoute = new_Route; // Becomes the new Origin´s first route
@@ -154,7 +154,7 @@ public class Graph {
 	public Node search_Node(int ID) { // Searches the Corresponding Client Node with the given ID, Returns Null if
 										// not found
 		
-		System.out.println("Searched Node: " + ID);
+		//System.out.println("Searched Node: " + ID);
 		
 		Node Aux = Origin;
 		
@@ -166,7 +166,7 @@ public class Graph {
 		}
 		
 		if (Aux != null) {
-			System.out.println("Node " + ID + " Found!");
+			//System.out.println("Node " + ID + " Found!");
 		}
 		return Aux;
 

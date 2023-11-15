@@ -29,7 +29,7 @@ public class FileReader {
             int idSource = Integer.parseInt(parts[0]);
             int idDest = Integer.parseInt(parts[1]);
             int uniCost = Integer.parseInt(parts[2]);
-            System.out.println("New Route Source : " + idSource + "  Destination : " + idDest + " Cost: " + uniCost);
+            // System.out.println("New Route Source : " + idSource + "  Destination : " + idDest + " Cost: " + uniCost);
             graph.add_Route_Between_Nodes(idSource, idDest, uniCost);
         }
         reader.close();

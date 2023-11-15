@@ -1,5 +1,7 @@
 package imp;
 
+
+
 import java.util.*;
 
 public class DijkstraAlgorithm {
@@ -9,7 +11,6 @@ public class DijkstraAlgorithm {
         int totalNodes = graph.getTotalNodes();
         int[][] distances = new int[distributionCenters.size()][totalNodes];
         int count = 0;
-
         for (int distCenter : distributionCenters) {
             // int distCenterIdx = 0;
             for (int i = 0; i < totalNodes; i++) {
@@ -56,5 +57,6 @@ public class DijkstraAlgorithm {
         }
         return minIndex;
     }
+
 }
 
