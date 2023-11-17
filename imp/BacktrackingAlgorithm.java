@@ -6,25 +6,23 @@ import imp.Graph.Client;
 import imp.Graph.Dist_center;
 
 public class BacktrackingAlgorithm {
-	
-	
+
 	public static class Backtracking_Node {
 		
 		int[][] Assignment;
-		
 		int Total_Annual_Cost;
 		
 		public void calculate_Annual_Cost(Graph graph, int Distances[][], ArrayList<Integer> distributionCenters) { // Calculates the Annual_Cost of the current Client Assigment
 			
-			for(int i = 0; i < Distances[0].length - distributionCenters.size(); i++) { // For each Client
+			for(int i = 0; i < distributionCenters.size() ; i++) { // For each Client
 				
-				for(int j = 0; j < distributionCenters.size(); j++) { // For each Distribution Center
+				for(int j = 0; j < Distances[0].length - distributionCenters.size(); j++) { // For each Distribution Center
 					
-					if(Assignment[i][j] == 1) { // When The assignment is found
+					if(Assignment[j][i] == 1) { // When The assignment is found
 						
-						Dist_center Dist_Center = (Dist_center) graph.getNode(distributionCenters.get(j)); // Retrieve the Dist_Center from Graph
+						Dist_center Dist_Center = (Dist_center) graph.search_Node(distributionCenters.get(i)); // Retrieve the Dist_Center from Graph
 						
-						Client Client = (imp.Graph.Client) graph.getNode(i); // Retrieve the Client from Graph
+						Client Client = (Graph.Client) graph.search_Node(i); // Retrieve the Client from Graph
 						
 						int Distance_Client_to_Dist = Distances[i][j]; // Obtains the distance between Client to the Distribution Center
 						
@@ -39,7 +37,6 @@ public class BacktrackingAlgorithm {
 					
 				}
 			}
-			
 		}
 		
 		public void remove_Dist_Center(int Dist_Center, int Distances[][]) { // Sets the removed center to -1 in the Assignment Matrix
