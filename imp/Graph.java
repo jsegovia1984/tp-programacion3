@@ -16,6 +16,14 @@ public class Graph {
 		int ID;
 		Node nextNode;
 		Route nextRoute;
+
+		public int getAnnualProd(){
+			return 0;
+		}
+
+		public int getPortCost(){
+			return 0;
+		}
 	}
 
 	public class Client extends Node {
