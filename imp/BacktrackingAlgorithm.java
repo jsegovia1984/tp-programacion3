@@ -1,7 +1,6 @@
 package imp;
 
 import java.util.ArrayList;
-
 import imp.Graph.Client;
 import imp.Graph.Dist_center;
 
@@ -12,80 +11,142 @@ public class BacktrackingAlgorithm {
 		int Node_Level;
 		int[][] Assignment;
 		int Total_Annual_Cost;
+		int Max_Total_Annual_Cost; // The Max Possible Cost going through this Node, is now used as the comparison for the upper limit
 		
-		public void calculate_Annual_Cost(Graph graph, int Distances[][], ArrayList<Integer> distributionCenters) { // Calculates the Annual_Cost of the current Client Assigment
+		public void calculate_Annual_Cost(Graph graph, int Distances[][], int distributionCenters) { // Calculates the Annual_Cost of the current Client Assigment
 			
-			for(int i = 0; i < distributionCenters.size() ; i++) { // For each Client
+			int Total_Nodes = Distances[0].length;
+			
+			for(int i = 0; i < distributionCenters ; i++) { // For each Distribution Center
 				
-				for(int j = 0; j < Distances[0].length - distributionCenters.size(); j++) { // For each Distribution Center
+				boolean Dist_Used = false;
+				
+				//System.out.println("Current Node: " + i);
+				
+				Dist_center Dist_Center = (Dist_center) graph.search_Node(Total_Nodes - distributionCenters + i); // Retrieve the Dist_Center from Graph
+				
+				for(int j = 0; j < Total_Nodes - distributionCenters; j++) { // For each Client
 					
 					if(Assignment[j][i] == 1) { // When The assignment is found
 						
-						Dist_center Dist_Center = (Dist_center) graph.search_Node(distributionCenters.get(i)); // Retrieve the Dist_Center from Graph
-						
-						Client Client = (Graph.Client) graph.search_Node(i); // Retrieve the Client from Graph
+						Dist_Used = true; // This means the Distribution Center is in use
+
+						Client Client = (Graph.Client) graph.search_Node(j); // Retrieve the Client from Graph
 						
 						int Distance_Client_to_Dist = Distances[i][j]; // Obtains the distance between Client to the Distribution Center
 						
 						int Client_Prod = Client.getAnnualProd(); // Retrieve Annual Production Value from Client
 						
-						Total_Annual_Cost = Total_Annual_Cost + (Client_Prod * Distance_Client_to_Dist) + (Dist_Center.getPortCost() * Client_Prod) + Dist_Center.getAnnualCost();
+						Total_Annual_Cost = Total_Annual_Cost + (Client_Prod * Distance_Client_to_Dist) + (Dist_Center.getPortCost() * Client_Prod);
 						
-						// The calculation goes is the Following :  Client Annual Production * Unitary Cost of Transport to the Distribution Centre + Unitary Port Transport Cost * Client Production + Dist_Centre Annual Maintenance Cost
+						// The calculation goes is the Following :  Client Annual Production * Unitary Cost of Transport to the Distribution Centre + Unitary Port Transport Cost * Client Production
 						
 						// This is done to each Client and summed up in the single Total_Annual_Cost Variable
 					}
-					
 				}
+				
+				if(Dist_Used == true) {
+					
+					//System.out.println("Dist_Centre: " + i + " Used Adding cost: " + Dist_Center.Annual_Cost );
+					
+					Total_Annual_Cost = (Total_Annual_Cost + Dist_Center.Annual_Cost); // Adds the annual maintenance cost of the Distribution Centre, if it is in use
+
+				}
+
 			}
 		}
-		
-		public void remove_Dist_Center(int Dist_Center, int Distances[][]) { // Sets the removed center to -1 in the Assignment Matrix
+	
+		public void calculate_Max_Annual_Cost(Graph graph, int Distances[][]) { // Calculates the maximum cost possible, ignoring Inactive Distribution Centres, similar to the Backpack Problem
 			
-			System.out.println("Removing Center: " + Dist_Center);
+			Max_Total_Annual_Cost = 0;
+			
+			int Total_Nodes = Distances[0].length;
+				
+			for(int Current_Dist_Center = 0; Current_Dist_Center < Assignment[0].length; Current_Dist_Center++) { // For each distribution centre
+				
+				boolean Dist_Used = false;
+				
+				Dist_center Dist_Center = (Dist_center) graph.search_Node(Total_Nodes - Assignment[0].length + Current_Dist_Center);
+				
+				for(int Client_ID = 0; Client_ID < Total_Nodes - Assignment.length; Client_ID++) { 
+					
+					Client Client = (Graph.Client) graph.search_Node(Client_ID);
+					
+					int Aux_Value = Integer.MIN_VALUE;
+					
+					int Max_Dist_Center = -1;
+					
+					if (Distances[Current_Dist_Center][Client_ID] > Aux_Value && Assignment[Client_ID][Current_Dist_Center] != -1) { // If the Value is higher than the Aux and it is not a unassigned Center
+						
+						Dist_Used = true;
+						
+						Aux_Value = Distances[Current_Dist_Center][Client_ID];
+						
+						Max_Dist_Center = Current_Dist_Center;
+						
+					}
+					
+					if(Max_Dist_Center != -1) {
+					
+						int Distance_Client_to_Dist = Distances[Max_Dist_Center][Client_ID]; // Obtains the distance between Client to the Distribution Center
+						
+						int Client_Prod = Client.getAnnualProd(); // Retrieve Annual Production Value from Client
+						
+						Max_Total_Annual_Cost = Max_Total_Annual_Cost + (Client_Prod * Distance_Client_to_Dist) + (Dist_Center.getPortCost() * Client_Prod);
+					}
+					
+				}
+				
+				if(Dist_Used == true) {
+					
+					//System.out.println("Dist_Centre: " + i + " Used Adding cost: " + Dist_Center.Annual_Cost );
+					
+					Max_Total_Annual_Cost = (Max_Total_Annual_Cost + Dist_Center.Annual_Cost); // Adds the annual maintenance cost of the Distribution Centre, if it is in use
+
+				}
+				
+			}
+			
+		}
+		
+		public void add_Dist_Center(int Dist_Center, int Distances[][]) { // Sets a Distribution Centre Column to 0 to be made available for Assignment
+			
+			//System.out.println("Adding Center: " + (Dist_Center + 50));
 			
 			for(int Current_Client = 0; Current_Client < Assignment.length; Current_Client++) {
 				
-				//System.out.println(Assignment[Current_Client][Dist_Center]);
-				
-				if(Assignment[Current_Client][Dist_Center] == 1) {
+					Assignment[Current_Client][Dist_Center] = 0;
 					
-					//System.out.println("Removing Assignment");
-					
-					Assignment[Current_Client][Dist_Center] = -1; // Sets it to removed
-					
-					//System.out.println("Result: " + Assignment[Current_Client][Dist_Center]);
-					
-					next_minDist_center(Current_Client, Dist_Center, Distances); 
+					next_minDist_center(Current_Client, Dist_Center, Distances);  // Checks if the currently enabled Distribution Centre is better than the previous options
 					
 				}
-				else {
-					
-					//System.out.println("Setting it to -1");
-					
-					Assignment[Current_Client][Dist_Center] = -1; // Sets it to removed	
-					
-					//System.out.println("Result: " + Assignment[Current_Client][Dist_Center]);
-				}
-				
+
 			}
-			
-		}
 		
-		private void next_minDist_center(int Client_ID, int Removed_Dist_ID, int Distances[][]) { // Finds the next Closest Center for the affected Client
+		private void next_minDist_center(int Client_ID, int Added_Dist_ID, int Distances[][]) { // Finds the next Closest Center for the affected Client
 			
 			int Aux_Value = Integer.MAX_VALUE;
 			
-			int Min_Dist_Center = 0;
+			int Min_Dist_Center = -1;
 			
-			for(int Current_Dist_Center = 0; Current_Dist_Center < Assignment[0].length; Current_Dist_Center++) { // For each distribution center
+			//System.out.println("Finding min with: " + (Added_Dist_ID + 50));
+			
+			for(int Current_Dist_Center = 0; Current_Dist_Center < Assignment[0].length; Current_Dist_Center++) { // For each distribution centre
 				
-				if (Distances[Current_Dist_Center][Client_ID] < Aux_Value && Assignment[Client_ID][Current_Dist_Center] != -1) { // If the Value is lower than the Aux and it is not a removed Center
+				if (Distances[Current_Dist_Center][Client_ID] < Aux_Value && Assignment[Client_ID][Current_Dist_Center] != -1) { // If the Value is lower than the Aux and it is not a unassigned Center
 					
 					Aux_Value = Distances[Current_Dist_Center][Client_ID];
 					
 					Min_Dist_Center = Current_Dist_Center;
+					
 				}
+				
+				if(Assignment[Client_ID][Current_Dist_Center] == 1 || Assignment[Client_ID][Current_Dist_Center] != -1) {
+					
+					Assignment[Client_ID][Current_Dist_Center] = 0; // Sets the current distribution centre to not used
+					
+				}
+
 			}
 			
 			Assignment[Client_ID][Min_Dist_Center] = 1;
@@ -102,142 +163,136 @@ public class BacktrackingAlgorithm {
 		
 		Backtracking_Node Result = new Backtracking_Node(); // Starts as null
 		
-		Result.Total_Annual_Cost = Integer.MAX_VALUE;
+		Result.Total_Annual_Cost = Integer.MAX_VALUE; // Starts at Infinity
 		
-		int Dist_Center_Level = 0; // Starts at the first level
-		
-		Backtracking_Node Root = new Backtracking_Node();
-		
-		Root.Assignment = create_RootNode(Distances, Client_Assignments, distributionCenters); // Creates the Root Node Assigment Matrix
-		
-		Root.calculate_Annual_Cost(graph, Distances, distributionCenters); // Calculate the annual Cost of the Root
-		
-		Root.Node_Level = Dist_Center_Level;
-		
-		//int upper_Limit = Root.Total_Annual_Cost; // Sets the upper limit to the Root Annual Cost initially
+		Backtracking_Node Root = create_RootNode(Distances[0].length, distributionCenters.size());// Creates the Root Node Assigment Matrix with no centers assigned
 		
 		int upper_Limit = Integer.MAX_VALUE; // Sets the upper limit to the Root Annual Cost initially
 	
-		PriorityQueue Alive_Nodes = new PriorityQueue(); // Min-heap Priority Queue
+		PriorityQueue Alive_Nodes = new PriorityQueue(); // Create a Min-heap Priority Queue
 		
-		Alive_Nodes.insert(Root, Root.Total_Annual_Cost);
+		Alive_Nodes.insert(Root, Root.Total_Annual_Cost); // Insert the Root into the Node
 		
-		while (!Alive_Nodes.isEmpty()) {
+		int Iterations = 1; // Remove this later, just checking for times executed
+		
+		int Trim_Counter = 0; // Remove this later, just counting Trims
+		
+		while (!Alive_Nodes.isEmpty()) { // When this still has nodes to check
 			
-			Backtracking_Node Current_Node = Alive_Nodes.remove(); // Obtains the Highest Priority Node and removes it from the Queue 
+			Iterations++; // Counting Iterations
 			
-			//System.out.println("Current Node:" + Current_Node);
+			Backtracking_Node Current_Node = Alive_Nodes.remove(); // Obtains the Lowest Annual Cost Node and removes it from the Queue 
 			
-			System.out.println("Current Level: " + Current_Node.Node_Level);
+			/*
 			
-			//System.out.println("---------------------------------------------");
+			System.out.println("---------------------------------------------");
 			
-			//show_Greedy(Current_Node.Assignment, Current_Node.Assignment[0].length);
+			show_Greedy(Current_Node.Assignment, Current_Node.Assignment[0].length);
 			
-			//System.out.println("---------------------------------------------");
+			System.out.println("---------------------------------------------");
 			
+			*/
 			
-			if(!is_Leaf(Current_Node) && Current_Node.Node_Level < Current_Node.Assignment[0].length) { // If the Current Node is not a Leaf
+			//System.out.println("Annual cost of child: " + Current_Node.Total_Annual_Cost);
+			
+			//System.out.println("Current upper limit: " + upper_Limit);
+			
+			if(Current_Node.Node_Level < Current_Node.Assignment[0].length  && Current_Node.Max_Total_Annual_Cost < upper_Limit) { // Without this level check the Algorithm blows up , Also decides if it should be Trimmed or Not
 				
+				//System.out.println("--------------Node not Trimmed!-------------------");
+								
 				ArrayList<Backtracking_Node> Current_Children = create_Children(graph, Current_Node, Current_Node.Node_Level, Distances, distributionCenters);
 				
 				for(int i = 0; i < Current_Children.size(); i++) {
 					
-					Backtracking_Node Current_Child = Current_Children.get(i);
+					Backtracking_Node Current_Child = Current_Children.get(i); // Grab the Children
 					
-					//System.out.println("Current Child: " + Current_Child);
-					
-					if(i == 0) { // If it is the cloned Child there is no need to clear and recalcualte the Annual Cost
-						
-						//System.out.println("Removed Center");
-						
+					if(i == 0) { // If the Child is the one where the Distribution Centre is not added, there is no need to clear and recalcualte the Annual Cost / Max_Annual_Cost as those remain the same
+												
 						Current_Child.clear_Annual_Cost(); // Removes previous Value
 						
-						Current_Child.calculate_Annual_Cost(graph, Distances, distributionCenters); // Calculates the cost of the child if it is a removed centre
+						Current_Child.calculate_Annual_Cost(graph, Distances, distributionCenters.size()); // Calculates the cost of the child if it is a Removed Centre
 						
-						//System.out.println("---------------Client Assignments of Removed Node------------------");
+						Current_Child.calculate_Max_Annual_Cost(graph, Distances); // Calculates the new Max_Annual_Cost taking into account the newly added Distribution Centre
+						
+						//System.out.println("Node Level: " + Current_Child.Node_Level);
+
+						//System.out.println("Annual cost of child: " + Current_Child.Total_Annual_Cost);
+						
+						//System.out.println("Current upper limit: " + upper_Limit);
+
+						//System.out.println("---------------Client Assignments of Added Node------------------");
 						
 						//show_Greedy(Current_Child.Assignment, Current_Child.Assignment[0].length);
 						
 						//System.out.println("-----------------------------------------------------------");
+						
 					}
 					
-					/*
-					else {
-						System.out.println("Non-Removed Center");
-					}
-					*/
-					
-					System.out.println("Annual cost of child: " + Current_Child.Total_Annual_Cost);
-					
-					//System.out.println("Current upper limit: " + upper_Limit);
-					
-					if(Current_Child.Total_Annual_Cost < upper_Limit) { // Decides if it gets trimmed or not
+					//System.out.println("Max Annual cost of child: " + Current_Child.Max_Total_Annual_Cost);
+
+						if(is_Leaf(Current_Child, distributionCenters.size())) { // Check if it is a Leaf
+								
+							//show_Greedy(Current_Child.Assignment, Current_Child.Assignment[0].length);
+							
+							//System.out.println("Node Level: " + Current_Child.Node_Level);
+							
+							//System.out.println("Annual cost of child: " + Current_Child.Total_Annual_Cost);
 							
 							if (Current_Child.Total_Annual_Cost < Result.Total_Annual_Cost) { // If it is better than the current Result
 								
-								//System.out.println("New best result");
-								
 								Result = Current_Child; // It becomes the result
 								
-								//upper_Limit = Current_Child.Total_Annual_Cost;
+								upper_Limit = Math.min(upper_Limit, Current_Child.Total_Annual_Cost); // Updates the upper Limit
+								}
 							}
-							
-							//System.out.println("Added to Alives");
+						
+						else {
 							
 							Alive_Nodes.insert(Current_Child, Current_Child.Total_Annual_Cost); // Inserts the Child with its Annual Cost into the Heap
 							
-							//if(Current_Child.Total_Annual_Cost < upper_Limit) { // Updates the upper_Limit with the smaller value
-								//upper_Limit = Current_Child.Total_Annual_Cost;
-							//}
-							
-						
-					}
-					else {
-						System.out.println("Node Trimmed");
-					}
+							}
+						//upper_Limit = Math.min(upper_Limit, Current_Child.Total_Annual_Cost);
+						}
 				}	
-					}
+			else {
 				
-			else { // If it is a Leaf, Just compare it to the result to see if it is better or not
+				//System.out.println("--------------Node Trimmed!-----------------------");
 				
-				System.out.println("Leaf Total Annual Cost: " + Current_Node.Total_Annual_Cost);
-				
-				if (Current_Node.Total_Annual_Cost < Result.Total_Annual_Cost) { // If it is better than the current Result
-					
-					//System.out.println("New best result from Leaf");
-					
-					Result = Current_Node; // Assign it as the new Result
-					
-					if(Current_Node.Total_Annual_Cost < upper_Limit) { // Updates the upper_Limit with the smaller value
-						upper_Limit = Current_Node.Total_Annual_Cost;
-				}
-			
-				}
+				Trim_Counter++;
 			}
 		}
-		System.out.println("The Final Annual Cost is:" + Result.Total_Annual_Cost);
+		
+		System.out.println("");
+		
+		System.out.println("--------------------Results-----------------------");
+		
+		System.out.println("");
+		
+		System.out.println("Iterations: " + Iterations);
+		
+		System.out.println("");
+		
+		System.out.println("Times Trimmed: " + Trim_Counter);
+		
+		System.out.println("");
+		
+		System.out.println("The Final Annual Cost is: " + Result.Total_Annual_Cost);
+		
+		System.out.println("");
+		
+		System.out.println("-------------Assignment Results--------------------");
+		
+		System.out.println("");
+		
+		show_Greedy(Result.Assignment, Result.Assignment[0].length);
+
+		System.out.println("");
 		
 		return Result.Assignment;
 	}
 	
-	public int[][] create_RootNode(int Distances[][], int Client_Assignments[][], ArrayList<Integer> distributionCenters) { // Creates the initial root "Node"
-		
-		int[][]  Node = new int[Distances[0].length - distributionCenters.size()][distributionCenters.size()];
-		
-		for(int i = 0; i < distributionCenters.size(); i++) { 
-			
-			for(int j = 0; j < Distances[0].length; j++) {
-				
-				if(Client_Assignments[j][i] == 1) { // If it is assigned to the current center
-					Node[j][i] = 1; // Assign it in the new Node
-				}
-			}
-		}
-		
-		return Node;
-	}
-	
+
 	public Backtracking_Node create_CloneNode(Backtracking_Node Parent) { // Literally just copies the Parent Node
 		
 		Backtracking_Node Copy = new Backtracking_Node();
@@ -254,70 +309,85 @@ public class BacktrackingAlgorithm {
 		
 		Copy.Total_Annual_Cost = Parent.Total_Annual_Cost;
 		
+		Copy.Max_Total_Annual_Cost = Parent.Max_Total_Annual_Cost;
+		
 		return Copy;
 		
 	}
 	
-	public ArrayList<Backtracking_Node> create_Children(Graph graph ,Backtracking_Node Parent, int Dist_Center_Pending_Removal, int Distances[][], ArrayList<Integer> distributionCenters){
+	public Backtracking_Node create_RootNode(int Total_Nodes, int Distribution_Centers) { // Creates the initial root "Node"
+		
+		Backtracking_Node Root = new Backtracking_Node();
+		
+		int Clients = Total_Nodes - Distribution_Centers; // Gets the amount of Clients
+		
+		Root.Assignment = new int[Total_Nodes - Distribution_Centers][Distribution_Centers];
+		
+		for(int i = 0; i <  Distribution_Centers; i++) { // Sets all Centers as Unnasigned, that is -1
+			
+			for(int j = 0; j < Clients; j++) {
+				
+					Root.Assignment[j][i] = -1; 
+				}
+			}
+		
+		Root.Total_Annual_Cost = Integer.MAX_VALUE; // As it is empty, the cost is Infinite
+		
+		Root.Node_Level = 0; // The Root Node level starts at 0
+		
+		Root.Max_Total_Annual_Cost = Integer.MIN_VALUE;
+		
+		return Root;
+	}
+	
+	public ArrayList<Backtracking_Node> create_Children(Graph graph ,Backtracking_Node Parent, int Dist_Center_Level, int Distances[][], ArrayList<Integer> distributionCenters){
 		
 		ArrayList<Backtracking_Node> Children = new ArrayList<Backtracking_Node>();
 		
-		Backtracking_Node Non_Removed_Dist_Cent = create_CloneNode(Parent); // This is just a copy of the Parent
+		Backtracking_Node Added_Dist_Cent = create_CloneNode(Parent); // This is just a copy of the Parent
 		
-		Backtracking_Node Removed_Dist_Cent = create_CloneNode(Parent); // This starts as just a copy
+		Backtracking_Node Non_Added_Dist_Cent = create_CloneNode(Parent); // This starts as just a copy
 		
-		Removed_Dist_Cent.remove_Dist_Center(Dist_Center_Pending_Removal, Distances); // Removes the Distribution Center
+		Added_Dist_Cent.add_Dist_Center(Dist_Center_Level, Distances); // Removes the Distribution Center
 		
-		Removed_Dist_Cent.clear_Annual_Cost(); // Resets Cost
+		//show_Greedy(Added_Dist_Cent.Assignment, distributionCenters.size());
 		
-		Removed_Dist_Cent.calculate_Annual_Cost(graph, Distances, distributionCenters); // Recalculates Annual Cost
+		//System.out.println("-------------------------------------------");
 		
-		Removed_Dist_Cent.Node_Level = Dist_Center_Pending_Removal + 1;
+		//show_Greedy(Non_Added_Dist_Cent.Assignment, distributionCenters.size());
 		
-		Non_Removed_Dist_Cent.Node_Level = Dist_Center_Pending_Removal + 1;
+		Added_Dist_Cent.clear_Annual_Cost(); // Resets Cost
 		
-		Children.add(Removed_Dist_Cent);
+		Added_Dist_Cent.calculate_Annual_Cost(graph, Distances, distributionCenters.size()); // Recalculates Annual Cost
 		
-		Children.add(Non_Removed_Dist_Cent);
+		Added_Dist_Cent.Node_Level = Dist_Center_Level + 1;
+		
+		Non_Added_Dist_Cent.Node_Level = Dist_Center_Level + 1;
+		
+		Children.add(Added_Dist_Cent);
+		
+		Children.add(Non_Added_Dist_Cent);
 		
 		return Children;
 	}
 	
-	public boolean is_Leaf(Backtracking_Node Node) { // Checks if the Node is a Leaf or Not
+	public boolean is_Leaf(Backtracking_Node Node, int Distrib_Center) { // Checks if the Node is a Leaf or Not
 		
-		//System.out.println("---------------------------------------------");
-		
-		//System.out.println("Leaf Check!");
-		
-		int Inactive_Centers = 0;
-		
-		int Dist_Center_Amount = Node.Assignment[0].length;
-		
-		for(int i = 0; i < Dist_Center_Amount; i++) { // Checks each column
-			
-			//System.out.println("Current Center: " + Node.Assignment[0][i]);
-			
-			if(Node.Assignment[0][i] == -1) { // The current distribution Centre is removed
-				
-				Inactive_Centers++;
-			}
-		}
-		
-		return Inactive_Centers == Dist_Center_Amount - 1; // Returns True or False if there is only one Centre left or not
+		return Node.Node_Level == Distrib_Center;
 	}
 	
-	// Temp Function 
+	// Temp Function, REMOVE LATER 
 	
 	public static void show_Greedy(int[][] matrix, int distCenters){
     	
    	 System.out.print("  ");
    	
        for (int i = 0; i < distCenters; i++){
-           System.out.print(String.format("%4d ", matrix.length - distCenters + i));
+           System.out.print(String.format("%4d ", matrix.length + i));
        }
        System.out.println("");
 
-       for (int i = 0; i < matrix.length-distCenters; i++) {
+       for (int i = 0; i < matrix.length; i++) {
        	
        	if(i < 10) {	
        		System.out.print(" " + i);
@@ -339,4 +409,13 @@ public class BacktrackingAlgorithm {
            System.out.println();
        }
    }
+	
+	/*
+	 * 	NOTES
+	 * 
+	 * The algorithm without Trimming has an iteration count of 2^8 = 256 times, in accordance to the cost calculation of (Amount of Children) ^ Amount of Levels
+	 * 
+	 * With the use of Trimming the Iterations are almost halved
+	 * 
+	 */
 }
