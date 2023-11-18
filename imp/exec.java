@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 
-public class Exec {
+public class exec {
 
     public static void main(String[] args) {
 
