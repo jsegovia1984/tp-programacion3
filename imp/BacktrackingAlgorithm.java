@@ -159,7 +159,7 @@ public class BacktrackingAlgorithm {
 		
 	}
 	
-	public int[][] Backtracking(Graph graph, int Distances[][], int Client_Assignments[][], ArrayList<Integer> distributionCenters){
+	public int[][] Backtracking(Graph graph, int Distances[][], ArrayList<Integer> distributionCenters){
 		
 		Backtracking_Node Result = new Backtracking_Node(); // Starts as null
 		
