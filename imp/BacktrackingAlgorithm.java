@@ -348,7 +348,7 @@ public class BacktrackingAlgorithm {
 		
 		Backtracking_Node Non_Added_Dist_Cent = create_CloneNode(Parent); // This starts as just a copy
 		
-		Added_Dist_Cent.add_Dist_Center(Dist_Center_Level, Distances); // Removes the Distribution Center
+		Added_Dist_Cent.add_Dist_Center(Dist_Center_Level, Distances); // Adds the Distribution Center
 		
 		//show_Greedy(Added_Dist_Cent.Assignment, distributionCenters.size());
 		

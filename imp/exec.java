@@ -106,10 +106,10 @@ public class exec {
 
         int[] array = new int[distCenters];
         for (int i = 0; i < matrix.length; i++) {
-            int centro = 0;
+            //int centro = 0;
             for (int j = 0; j < matrix[0].length; j++) {
                 if (matrix[i][j] == 1){
-                    centro = j;
+                    //centro = j;
                     array[j] += 1;
                 }
             }
