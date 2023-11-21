@@ -122,7 +122,8 @@ public class Graph {
 		new_Route.Destination = Destination; // Sets the Route Destination
 		new_Route.nextRoute = Source.nextRoute; // Sets to the Origins previous Route
 		Source.nextRoute = new_Route; // Becomes the new Origin´s first route
-		// System.out.println("Route added!");
+		//System.out.println("Route added!");
+		//System.out.println("Start Point: " + Source.ID + " End Point: " + Destination.ID);
 		/*
 		if (Source.nextRoute != null) { // This was wrong
 			Source.nextRoute = new_Route; // Becomes the new Origin´s first route

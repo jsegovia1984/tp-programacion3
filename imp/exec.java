@@ -8,6 +8,8 @@ public class exec {
 
     public static void main(String[] args) {
 
+        long tiempoInicio = System.currentTimeMillis();
+
         // We start reading the files and loading it into the file reader structure
         FileReader fileReader = new FileReader();
         try {
@@ -24,7 +26,6 @@ public class exec {
         ArrayList<Integer> distCenters = fileReader.getDistCenters();
         //System.out.println(distCenters);
 
-        
         //Dijkstra -----------------------------------------------------------------------------------------------------
 
         // we define the dijkstra structure
@@ -34,14 +35,14 @@ public class exec {
         int[][] dijkstra_matrix = dijkstra.dijkstra(filledGraph, distCenters);
 
         // this is a function to show in console the dijktras matrix
-        System.out.println("Dijkstra Matrix");
-        System.out.println(" ");
-        show_Dijkstra(dijkstra_matrix, distCenters.size());
+        //show_Dijkstra(dijkstra_matrix, distCenters.size());
         
         // Backtracking
         
         BacktrackingAlgorithm backtracking = new BacktrackingAlgorithm();
         int [][] backtracking_matrix = backtracking.Backtracking(filledGraph,dijkstra_matrix,distCenters);
+        System.out.println("Tiempo de ejecucion: " + (System.currentTimeMillis() - tiempoInicio) + "ms");
+        System.out.println("");
         show_backtracking(backtracking_matrix,distCenters.size());
     }
 
@@ -102,13 +103,13 @@ public class exec {
         }
     }
     
-    public static void show_backtracking(int [][] matrix, int distCenters){
+    public static void show_backtracking(int [][] matrix, int distCenters) {
 
         int[] array = new int[distCenters];
         for (int i = 0; i < matrix.length; i++) {
             //int centro = 0;
             for (int j = 0; j < matrix[0].length; j++) {
-                if (matrix[i][j] == 1){
+                if (matrix[i][j] == 1) {
                     //centro = j;
                     array[j] += 1;
                 }
@@ -118,9 +119,23 @@ public class exec {
             //System.out.println();
         }
         System.out.println("Clients for each Center:");
-        for (int i= 0 ; i < array.length ; i++){
-        	System.out.println();
-            System.out.println("Center " + (matrix.length + i) + ": [" + array[i] + "] Clients");
+
+        for (int i = 0; i < array.length; i++) {
+            System.out.println();
+            System.out.println("Center " + (matrix.length + i) + ": [" + array[i] + "] Clients " + get_center_clients(matrix, i));
         }
+        System.out.println("");
+    }
+
+    public static ArrayList<Integer> get_center_clients(int[][] matrix, int center){
+        ArrayList<Integer> clients = new ArrayList<Integer>();
+
+        for (int i= 0 ; i < matrix.length ; i++){
+            if (matrix[i][center] == 1) {
+                clients.add(i);
+            }
+        }
+
+        return clients;
     }
 }

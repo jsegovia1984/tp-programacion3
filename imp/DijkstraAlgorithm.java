@@ -5,10 +5,8 @@ import java.util.PriorityQueue;
 
 public class DijkstraAlgorithm {
     private static final int INFINITY = Integer.MAX_VALUE;
-
     public DijkstraAlgorithm() {
     }
-
     public int[][] dijkstra(Graph graph, ArrayList<Integer> distributionCenters) {
         int totalNodes = graph.getTotalNodes();
         int[][] distances = new int[distributionCenters.size()][totalNodes];
@@ -27,13 +25,11 @@ public class DijkstraAlgorithm {
         int totalNodes = graph.getTotalNodes();
         int[] dist = new int[totalNodes];
         boolean[] visited = new boolean[totalNodes];
-
         // Initialize distances and visited array
         for (int count = 0; count < totalNodes; count++) {
             dist[count] = INFINITY;
             visited[count] = false;
         }
-
         dist[source] = 0;
 
         // Use PriorityQueue to store nodes with distance-based priority
@@ -43,7 +39,6 @@ public class DijkstraAlgorithm {
         while (!priorityQueue.isEmpty()) {
             int u = priorityQueue.poll(); //cambie poll x remove
             visited[u] = true;
-
             // Explore neighbors of u
             for (int v = 0; v < totalNodes; v++) {
                 if (!visited[v] && graph.getCost(u, v) != INFINITY && dist[u] != INFINITY &&
@@ -54,7 +49,6 @@ public class DijkstraAlgorithm {
                 }
             }
         }
-
         return dist;
     }
 }

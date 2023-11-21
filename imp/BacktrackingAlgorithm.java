@@ -148,9 +148,7 @@ public class BacktrackingAlgorithm {
 				}
 
 			}
-			
 			Assignment[Client_ID][Min_Dist_Center] = 1;
-			
 		}
 		
 		public void clear_Annual_Cost() { // Sets cost to 0 to be recalculated
@@ -273,8 +271,12 @@ public class BacktrackingAlgorithm {
 		
 		System.out.println("");
 		
-		System.out.println("Times Trimmed: " + Trim_Counter);
+		System.out.println("Times Trimmed: " + (int)(Math.pow(2, distributionCenters.size()) - Iterations));
 		
+		System.out.println("");
+
+		System.out.println("Total calculated Leafs: " + (int)Math.pow(2, distributionCenters.size()));
+
 		System.out.println("");
 		
 		System.out.println("The Final Annual Cost is: " + Result.Total_Annual_Cost);
@@ -285,7 +287,7 @@ public class BacktrackingAlgorithm {
 		
 		System.out.println("");
 		
-		show_Greedy(Result.Assignment, Result.Assignment[0].length);
+		//show_Greedy(Result.Assignment, Result.Assignment[0].length);
 
 		System.out.println("");
 		
