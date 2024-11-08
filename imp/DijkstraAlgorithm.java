@@ -25,25 +25,25 @@ public class DijkstraAlgorithm {
         int totalNodes = graph.getTotalNodes();
         int[] dist = new int[totalNodes];
         boolean[] visited = new boolean[totalNodes];
-        // Initialize distances and visited array
+        // Inicializa los arreglos de distancias y visitados
         for (int count = 0; count < totalNodes; count++) {
             dist[count] = INFINITY;
             visited[count] = false;
         }
         dist[source] = 0;
 
-        // Use PriorityQueue to store nodes with distance-based priority
+        //usa cola de prioridad para almacenar nodos con prioridad basada en la distancia
         PriorityQueue<Integer> priorityQueue = new PriorityQueue<>((a, b) -> Integer.compare(dist[a], dist[b]));
         priorityQueue.offer(source); // cambie offer x insert
 
         while (!priorityQueue.isEmpty()) {
             int u = priorityQueue.poll(); //cambie poll x remove
             visited[u] = true;
-            // Explore neighbors of u
+            // expande los vecinos de u
             for (int v = 0; v < totalNodes; v++) {
                 if (!visited[v] && graph.getCost(u, v) != INFINITY && dist[u] != INFINITY &&
                         dist[u] + graph.getCost(u, v) < dist[v]) {
-                    // Update distance and enqueue v if a shorter path is found
+                    // actualiza la distancia y encola v si se encuentra un camino más corto
                     dist[v] = dist[u] + graph.getCost(u, v);
                     priorityQueue.offer(v);
                 }

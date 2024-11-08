@@ -4,11 +4,10 @@ import java.util.*;
 
 public class Graph {
 
-	public static final int INFINITY = Integer.MAX_VALUE; // Nota para nosotrs, asi se declara un infinito en java, es
-															// el maximo valor q puede tener un int
-	public Node Origin; // This node is used as an indicator that the Graph is initially empty
+	public static final int INFINITY = Integer.MAX_VALUE; // se declara un infinito en java
+	public Node Origin;  // este nodo se usa como indicador de que el grafo está inicialmente vacío
 
-	public Graph() { // Constructor for the Graph
+	public Graph() { // constructor del grafo
 		Origin = null;
 	}
 
@@ -70,9 +69,9 @@ public class Graph {
 		Route nextRoute;
 	}
 
-	public void add_Client(int ID, int annual_Prod) { // Method to add Clients to the Graph
+	public void add_Client(int ID, int annual_Prod) { // metodo para agregar un cliente al grafo
 		Client new_Client = new Client(ID, annual_Prod);
-		new_Client.nextRoute = null; // Starts without Routes
+		new_Client.nextRoute = null; // comienza sin rutas
 		new_Client.nextNode = Origin;
 		Origin = new_Client;
 		//System.out.println("Client " + ID + " added");
@@ -85,8 +84,9 @@ public class Graph {
 		new_Center.Port_Cost = Port_Cost;
 		new_Center.Annual_Cost = Annual_Cost;
 		new_Center.nextNode = null;
-		new_Center.nextNode = Origin; // This was somehow set to null instead of Origin, so the Distribution Centers wouldnt be linked to the previous nodes
-		Origin = new_Center; // This too was never assigned, how did this pass the previous revision?
+		new_Center.nextNode = Origin; // Esto, de alguna manera, se estableció en null en lugar de Origin, por lo que los Centros de Distribución no se enlazarían con los nodos anteriores
+		Origin = new_Center; // Esto tampoco se asignó nunca, por lo que Origin siempre sería null
+
 		//System.out.println("Distribution Center " + ID + " added");
 		//System.out.println("---------------------------------------------");
 	}
@@ -99,11 +99,11 @@ public class Graph {
 		}
 	}
 
-	public void add_Route_Between_Nodes(int ID_Source, int ID_Dest, int Uni_Cost) { // Method to add Routes between a
+	public void add_Route_Between_Nodes(int ID_Source, int ID_Dest, int Uni_Cost) { // metodos para agregar rutas entre nodos
 		Node Source = search_Node(ID_Source);
 		Node Destination = search_Node(ID_Dest);
 		
-		// Create an exception when either is null
+		// crea una excepción cuando cualquiera de los dos es nulo
 		if (Source == null || Destination == null) {
 			// throw new RuntimeException("No se puede agregar una ruta entre nodos que no
 			// existen " + ID_Source + " "
@@ -118,31 +118,38 @@ public class Graph {
 			return;
 		}
 		Route new_Route = new Route();
-		new_Route.Uni_Cost = Uni_Cost; // Sets the Unitary Cost of Transport through this Route
-		new_Route.Destination = Destination; // Sets the Route Destination
-		new_Route.nextRoute = Source.nextRoute; // Sets to the Origins previous Route
+		new_Route.Uni_Cost = Uni_Cost;  // Costo unitario de transporte a través de esta ruta
+		new_Route.Destination = Destination; // ruta destino
+		new_Route.nextRoute = Source.nextRoute; // Establece la ruta anterior del origen
 		Source.nextRoute = new_Route; // Becomes the new Origin´s first route
 		//System.out.println("Route added!");
 		//System.out.println("Start Point: " + Source.ID + " End Point: " + Destination.ID);
 		/*
-		if (Source.nextRoute != null) { // This was wrong
-			Source.nextRoute = new_Route; // Becomes the new Origin´s first route
+		if (Source.nextRoute != null) { // esta esta mal
+			Source.nextRoute = new_Route; // Se convierte en la primera ruta del nuevo origen
 		}
 		*/
 
 	}
 
-	public int get_Route_Cost(int ID_Source, int ID_Dest) { // Gets the unitary transport cost between the origin and
-															// destination
 
-		Node Source = search_Node(ID_Source); // Searches the Client Node
-		Route Aux = Source.nextRoute; // Gets the first route in the Client Node
-		while (Aux.Destination.ID != ID_Dest) { // Tries to find the Unitary Cost
+
+	public int get_Route_Cost(int ID_Source, int ID_Dest) { 	// Obtiene el costo unitario de transporte entre el origen y el destino
+
+		Node Source = search_Node(ID_Source); // Busca el nodo del cliente
+		Route Aux = Source.nextRoute; // Obtiene la primera ruta en el nodo del cliente
+		while (Aux.Destination.ID != ID_Dest) { // Intenta encontrar el costo unitario
 			Aux = Aux.nextRoute;
 		}
 		return Aux.Uni_Cost;
-
+	
 	}
+	
+	
+	
+	
+	
+	
 
 	public ArrayList<Node> get_Neighbors(int ID) {
 
@@ -159,8 +166,9 @@ public class Graph {
 
 	}
 
-	public Node search_Node(int ID) { // Searches the Corresponding Client Node with the given ID, Returns Null if
-										// not found
+	public Node search_Node(int ID) { // Busca el nodo de cliente correspondiente con el ID dado, devuelve null si
+									  // no se encuentra
+		
 		
 		//System.out.println("Searched Node: " + ID);
 		
@@ -180,7 +188,6 @@ public class Graph {
 
 	}
 
-	// harry soy santi, agregue esto para ayudarme en el dijkstra
 	public int getTotalNodes() {
 		int count = 0;
 		Node current = Origin;
@@ -204,11 +211,11 @@ public class Graph {
 		Route route = src.nextRoute;
 		while (route != null) {
 			if (route.Destination.ID == destination) {
-				return route.Uni_Cost; // Return the cost of the rout
+				return route.Uni_Cost; // retorna el costo de la ruta
 			}
 			route = route.nextRoute;
 		}
-		return INFINITY; // If there is no route, returns infinity
+		return INFINITY; // si no hay una ruta retorna infinito
 	}
 
 	public boolean nodeExist(int id) {

@@ -10,31 +10,34 @@ public class exec {
 
         long tiempoInicio = System.currentTimeMillis();
 
-        // We start reading the files and loading it into the file reader structure
-        FileReader fileReader = new FileReader();
+// Empezamos a leer los archivos y cargarlos en la estructura del lector de archivos
+
+
+FileReader fileReader = new FileReader();
         try {
             fileReader.loadClients();
-            fileReader.loadDistCenters(fileReader.getTotalNodes()); // We obtain the amount of clients
+            fileReader.loadDistCenters(fileReader.getTotalNodes()); // Obtenemos la cantidad de clientes
             fileReader.loadRoutes();
-            // The load order was wrong, it was previously clients, routes and then the distribution centers. How do you add routes to non-existent distribution centers? Lol
-            // Whoever wrote the load sequence is a dummy
+
         } catch (IOException e) {
             e.printStackTrace();
         }
-        // also the file reader creates the graph with clients, and the distribution centers
+        // además, el lector de archivos crea el grafo con los clientes y los centros de distribución
+
+
         Graph filledGraph = fileReader.getGraph();
         ArrayList<Integer> distCenters = fileReader.getDistCenters();
         //System.out.println(distCenters);
 
         //Dijkstra -----------------------------------------------------------------------------------------------------
 
-        // we define the dijkstra structure
+        //se define la estructura de dijkstra
         DijkstraAlgorithm dijkstra = new DijkstraAlgorithm();
 
-        // we assign the result of the calculations into a matrix
+        // se asignan los resultados de los cálculos en una matriz
         int[][] dijkstra_matrix = dijkstra.dijkstra(filledGraph, distCenters);
 
-        // this is a function to show in console the dijktras matrix
+        // esta es una función para mostrar en consola la matriz de dijkstra
         //show_Dijkstra(dijkstra_matrix, distCenters.size());
         
         // Backtracking
@@ -118,11 +121,11 @@ public class exec {
             // Agrega un salto de línea después de cada fila
             //System.out.println();
         }
-        System.out.println("Clients for each Center:");
+        System.out.println("Clientes por cada centro:");
 
         for (int i = 0; i < array.length; i++) {
             System.out.println();
-            System.out.println("Center " + (matrix.length + i) + ": [" + array[i] + "] Clients " + get_center_clients(matrix, i));
+            System.out.println("Centro " + (matrix.length + i) + ": [" + array[i] + "] Clientes " + get_center_clients(matrix, i));
         }
         System.out.println("");
     }

@@ -23,7 +23,7 @@ public class FileReader {
 
         while ((line = reader.readLine()) != null) {
             if (line.startsWith("#")) {
-                continue; // Skip comment lines
+                continue; // Salta lineas comentadas
             }
             String[] parts = line.split(",");
             int idSource = Integer.parseInt(parts[0]);
@@ -42,7 +42,7 @@ public class FileReader {
 
         while ((line = reader.readLine()) != null) {
             if (line.startsWith("#")) {
-                continue; // Skip comment lines
+                continue; // Salta lineas comentadas
             }
             String[] parts = line.split(",");
             int id = Integer.parseInt(parts[0]);
@@ -63,7 +63,7 @@ public class FileReader {
                 continue; // Skip comment lines
             }
             String[] parts = line.split(",");
-            int id = (Integer.parseInt(parts[0]) + clientID_count); // By getting the amount of Clients beforehand, we can avoid repeating IDs
+            int id = (Integer.parseInt(parts[0]) + clientID_count); // Al obtener la cantidad de clientes de antemano, podemos evitar repetir IDs
             int portCost = Integer.parseInt(parts[1]);
             int annualCost = Integer.parseInt(parts[2]);
             //System.out.println("New Distribution Center: " + id + " Port Cost: " + portCost + " Annual Cost: " + annualCost);
